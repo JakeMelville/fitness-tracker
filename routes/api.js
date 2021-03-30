@@ -14,7 +14,7 @@ router.post('/api/workouts', ({ body }, res) => {
 });
 
 router.get("/api/workouts", (req, res) => {
-  Workout.aggregate([ {$addfields: {totalDuration: {sum: 'exercises.duration' }}} ])
+  Workout.aggregate([ { $addfields: { totalDuration: { sum: 'exercises.duration' }}}])
     .then(dbWorkout => {
       res.json(dbWorkout);
       console.log('GET /api/workouts hits=====');
@@ -25,7 +25,7 @@ router.get("/api/workouts", (req, res) => {
 });
 
 router.get("/api/workouts/range", (req, res) => {
-  Workout.find({})
+  Workout.aggregate([ { $addfields: { totalDuration: { $sum }}}])
     .then(dbWorkout => {
       res.json(dbWorkout);
       console.log('GET /api/workouts/range hits=====');
@@ -36,23 +36,19 @@ router.get("/api/workouts/range", (req, res) => {
     });
 });
 
-//getting the workouts by id
-router.put('/api/workouts/:id', async (req, res) => {
-  console.log('/api/workouts/1 hits======');
-  try {
-    const workoutData = await Workout.findByPk(req.params.id)
-    if (!workoutData) {
-      res.status(404).json({ message: 'No workout found with this id!' });
-      return;
-    }
-
-    res.status(200).json(workoutData);
-  } catch (err) {
-    res.status(500).json(err);
-  }
+//updating workouts by id
+router.put('/api/workouts/:id', ({ params, body }, res) => {
+  Workout.findByIdAndUpdate(params.id, { $push: { exercises: body }})
+  .then(dbWorkout => {
+    res.json(dbWorkout);
+    console.log('PUT /api/workouts/id hits ======');
+  })
+  .catch(err => {
+    res.status(400).json(err)
+  })
 })
 
-
+//delete workouts
 router.delete('api/workouts', ({ body }, res) => {
   Workout.findByIdAndDelete(body.id)
     .then(() => {
