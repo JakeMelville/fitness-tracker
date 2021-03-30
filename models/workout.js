@@ -23,7 +23,15 @@ const workoutSchema = new Schema({
             },
             weight: {
                 type: Number,
-                require
+                require: 'Enter weight'
+            },
+            reps: {
+                type: Number,
+                require: 'Enter amount of reps'
+            },
+            sets: {
+                type: Number,
+                require: 'Enter the number of sets'
             }
 
 
@@ -32,4 +40,4 @@ const workoutSchema = new Schema({
 })
 
 const Workout = mongoose.model('Workout', workoutSchema);
-module.exports = Workout
+module.exports = Workout;
