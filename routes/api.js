@@ -6,29 +6,36 @@ router.post('/api/workouts', ({ body }, res) => {
   Workout.create(body)
     .then((dbWorkout) => {
       res.json(dbWorkout)
+      console.log('POST /api/workouts hits=====');
     })
     .catch((err) => {
       res.status(400).json(err)
     });
 });
+
 router.get("/api/workouts", (req, res) => {
-  Workout.aggrega({})
+  Workout.aggregate([ {$addfields: {totalDuration: {sum: 'exercises.duration' }}} ])
     .then(dbWorkout => {
       res.json(dbWorkout);
+      console.log('GET /api/workouts hits=====');
     })
     .catch(err => {
       res.status(400).json(err);
     });
 });
+
 router.get("/api/workouts/range", (req, res) => {
   Workout.find({})
     .then(dbWorkout => {
       res.json(dbWorkout);
+      console.log('GET /api/workouts/range hits=====');
     })
     .catch(err => {
       res.status(400).json(err);
+
     });
 });
+
 //getting the workouts by id
 router.put('/api/workouts/:id', async (req, res) => {
   console.log('/api/workouts/1 hits======');
@@ -44,7 +51,6 @@ router.put('/api/workouts/:id', async (req, res) => {
     res.status(500).json(err);
   }
 })
-//agregate for the duration and duration range==> look up .aggregate for mongoose to get answer
 
 
 router.delete('api/workouts', ({ body }, res) => {
