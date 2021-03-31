@@ -175,17 +175,21 @@ function populateChart(data) {
 
 function calculateTotalWeight(data) {
   let totals = [];
-
+  console.log(data);
   data.forEach((workout) => {
-    const workoutTotal = workout.exercises.reduce((total, { type, weight }) => {
-      if (type === 'resistance') {
-        return total + weight;
-      } else {
-        return total;
-      }
-    }, 0);
 
-    totals.push(workoutTotal);
+    if (workout.exercises.length !== 0) {
+      const workoutTotal = workout.exercises.reduce((total, { type, weight }) => {
+        if (type === 'resistance') {
+          return total + weight;
+        } else {
+          return total;
+        }
+      }, 0);
+
+      totals.push(workoutTotal);
+    }
+    else { totals.push(0) }
   });
 
   return totals;
